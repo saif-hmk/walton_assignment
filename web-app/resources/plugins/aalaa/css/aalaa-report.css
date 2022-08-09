@@ -1,0 +1,102 @@
+/**
+ * @Created_By : AALAA
+ * @Date       : 2021.04.25 11:56:59 PM
+ * @Author     : Md. Hoshen Mahmud Khan
+ * @Email      : saif_hmk@live.com
+ * @Phone      : +8801672036757
+ **/
+/*----------------------------------------------------------------------------------------------------------------------------------------
+ *       Report: Toggle Button
+ * ----------------------------------------------------------------------------------------------------------------------------------------
+ *  https://stackoverflow.com/questions/39846282/how-to-add-the-text-on-and-off-to-toggle-button
+ * ----------------------------------------------------------------------------------------------------------------------------------------*/
+.switch {
+    position      : relative;
+    display       : inline-block;
+    width         : 90px;  /*90*/
+    height        : 32px;   /*34*/
+    vertical-align: top;
+    font-weight   : normal;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position          : absolute;
+    cursor            : pointer;
+
+    top               : 0;
+    left              : 0;
+    right             : 0;
+    bottom            : 0;
+
+    background-color  : #ca2222;
+    border-radius     : 50px;   /*34*/
+
+    -webkit-transition: .4s;
+    -moz-transition   : .4s;
+    -ms-transition    : .4s;
+    -o-transition     : .4s;
+    transition        : .4s;
+}
+
+.slider:before {
+    content           : "";
+    position          : absolute;
+
+    height            : 24px;   /*26*/
+    width             : 24px;   /*26*/
+    left              : 4px;
+    bottom            : 4px;
+
+    background-color  : white;
+    border-radius     : 50%;
+
+    -webkit-transition: .4s;
+    -moz-transition   : .4s;
+    -ms-transition    : .4s;
+    -o-transition     : .4s;
+    transition        : .4s;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider {
+    background-color: #2ab934;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -moz-transform   : translateX(26px);
+    -ms-transform    : translateX(26px);
+    -o-transform     : translateX(26px);
+    transform        : translateX(55px);
+}
+
+.slider:after {
+    content          : 'No';
+    color            : white;
+    display          : block;
+    position         : absolute;
+
+    font-family      : Verdana, sans-serif;
+    font-size        : 13px;    /*12*/
+    top              : 50%;
+    left             : 50%;
+
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform   : translate(-50%, -50%);
+    -ms-transform    : translate(-50%, -50%);
+    -o-transform     : translate(-50%, -50%);
+    transform        : translate(-50%, -50%);
+}
+
+input:checked + .slider:after {
+    content: 'Yes';
+    left   : 30%;
+}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/

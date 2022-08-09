@@ -1,0 +1,246 @@
+/**
+ * @Created_By : AALAA
+ * @Date       : 2016.11.11 9:55:17 AM
+ * @Author     : Md. Hoshen Mahmud Khan
+ * @Email      : saif_hmk@live.com
+ * @Phone      : +8801672036757
+ **/
+/*----------------------------------------------------------------------------------------------------------------------------------------
+ *                              General Color
+ * ----------------------------------------------------------------------------------------------------------------------------------------*/
+a {color: #3C8DBC;}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*                  Text Color                                                                                                                  */
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+.c-danger             {color: #C23321 !important;}
+.c-red                {color: #F44336 !important;}
+.c-pace               {color: #FF8D72 !important;}
+.c-pink-1             {color: #FD5D93 !important;}
+.c-pink               {color: #FF6384 !important;}
+.c-pink-deep          {color: #E91E63 !important;}
+.c-maroon             {color: #D81B60 !important;}
+.c-purple             {color: #9C27B0 !important;}
+.c-purple-deep        {color: #673AB7 !important;}
+.c-indigo             {color: #3F51B5 !important;}
+.c-primary            {color: #307095 !important;}
+.c-blue-deep          {color: #0073B7 !important;}
+.c-info-deep          {color: #3C8DBC !important;}
+.c-info               {color: #0097BC !important;}
+.c-info-light         {color: #00C0EF !important;}
+.c-blue               {color: #2196F3 !important;}
+.c-blue-1             {color: #36A2EB !important;}
+.c-blue-2             {color: #1D8CF8 !important;}
+.c-blue-light         {color: #03A9F4 !important;}
+.c-aqua               {color: #00C0EF !important;}
+.c-cyan               {color: #00BCD4 !important;}
+.c-teal-light         {color: #39CCCC !important;}
+.c-paste              {color: #00BF9A !important;}
+.c-teal               {color: #009688 !important;}
+.c-success            {color: #00733E !important;}
+.c-success-light      {color: #00A65A !important;}
+.c-green              {color: #4CAF50 !important;}
+.c-green-light        {color: #8BC3A4 !important;}
+.c-green-light-1      {color: #A1E82C !important;}
+.c-lime               {color: #CDDC39 !important;}
+.c-yellow             {color: #FFEB3B !important;}
+.c-yellow-deep        {color: #FFCE56 !important;}
+.c-amber              {color: #FFC107 !important;}
+.c-orange             {color: #FF9800 !important;}
+.c-orange-deep        {color: #FF5722 !important;}
+.c-warning            {color: #C87F0A !important;}
+.c-gray-light         {color: #D2D6DE !important;}
+.c-gray               {color: #9E9E9E !important;}
+.c-blue-gray          {color: #607D8B !important;}
+.c-brown              {color: #795548 !important;}
+.c-black              {color: #000000 !important;}
+.c-navy               {color: #001F3F !important;}
+.c-navy-deep          {color: #191970 !important;}
+.c-white              {color:   white !important;}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+.text-red             {color: #DD4B39 !important;}
+.text-yellow          {color: #F39C12 !important;}
+.text-black           {color: #111111 !important;}
+.text-green           {color: #00A65A !important;}
+.text-olive           {color: #3D9970 !important;}
+.text-lime            {color: #01FF70 !important;}
+.text-orange          {color: #FF851B !important;}
+.text-fuchsia         {color: #F012BE !important;}
+.text-purple          {color: #605CA8 !important;}
+/*----------------------------------------------------------------------------------------------------------------------------------------
+ *                              Box Color
+ * ----------------------------------------------------------------------------------------------------------------------------------------*/
+.box.box-info         {border-top-color: #00C0EF;}
+.box.box-primary      {border-top-color: #3C8DBC;}
+.box.box-danger       {border-top-color: #DD4B39;}
+.box.box-warning      {border-top-color: #F39C12;}
+.box.box-success      {border-top-color: #00A65A;}
+.box.box-default      {border-top-color: #D2D6DE;}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+/*                  Background Color                                                                                                            */
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+.b-c-danger           {background-color: #C23321 !important;}
+.b-c-red              {background-color: #F44336 !important;}
+.b-c-pace             {background-color: #FF8D72 !important;}
+.b-c-pink-1           {background-color: #FD5D93 !important;}
+.b-c-pink             {background-color: #FF6384 !important;}
+.b-c-pink-deep        {background-color: #E91E63 !important;}
+.b-c-maroon           {background-color: #D81B60 !important;}
+.b-c-purple           {background-color: #9C27B0 !important;}
+.b-c-purple-deep      {background-color: #673AB7 !important;}
+.b-c-indigo           {background-color: #3F51B5 !important;}
+.b-c-primary          {background-color: #307095 !important;}
+.b-c-blue-deep        {background-color: #0073B7 !important;}
+.b-c-info-deep        {background-color: #3C8DBC !important;}
+.b-c-info             {background-color: #0097BC !important;}
+.b-c-blue             {background-color: #2196F3 !important;}
+.b-c-blue-1           {background-color: #36A2EB !important;}
+.b-c-blue-2           {background-color: #1D8CF8 !important;}
+.b-c-blue-light       {background-color: #03A9F4 !important;}
+.b-c-aqua             {background-color: #00C0EF !important;}
+.b-c-cyan             {background-color: #00BCD4 !important;}
+.b-c-teal-light       {background-color: #39CCCC !important;}
+.b-c-paste            {background-color: #00BF9A !important;}
+.b-c-teal             {background-color: #009688 !important;}
+.b-c-success          {background-color: #00733E !important;}
+.b-c-green            {background-color: #4CAF50 !important;}
+.b-c-green-light      {background-color: #8BC3A4 !important;}
+.b-c-green-light-1    {background-color: #A1E82C !important;}
+.b-c-lime             {background-color: #CDDC39 !important;}
+.b-c-yellow           {background-color: #FFEB3B !important;}
+.b-c-yellow-deep      {background-color: #FFCE56 !important;}
+.b-c-amber            {background-color: #FFC107 !important;}
+.b-c-orange           {background-color: #FF9800 !important;}
+.b-c-orange-deep      {background-color: #FF5722 !important;}
+.b-c-warning          {background-color: #C87F0A !important;}
+.b-c-gray             {background-color: #9E9E9E !important;}
+.b-c-blue-gray        {background-color: #607D8B !important;}
+.b-c-brown            {background-color: #795548 !important;}
+.b-c-black            {background-color: #000000 !important;}
+.b-c-navy             {background-color: #001F3F !important;}
+.b-c-navy-deep        {background-color: #191970 !important;}
+.b-c-white            {background-color:   white !important;}
+.b-c-t                {background-color: transparent !important;}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/
+.bg-olive             {background-color: #3D9970 !important;}
+.bg-lime              {background-color: #01FF70 !important;}
+.bg-orange            {background-color: #FF851B !important;}
+.bg-fuchsia           {background-color: #F012BE !important;}
+.bg-purple            {background-color: #605CA8 !important;}
+.bg-black             {background-color: #111111 !important;}
+.bg-gray              {background-color: #D2D6DE !important; color: #000;}
+.bg-gray-light        {background-color: #F7F7F7 !important;}
+.bg-red               {background-color: #DD4B39 !important;}
+.bg-yellow            {background-color: #F39C12 !important;}
+.bg-green             {background-color: #00A65A !important;}
+/*----------------------------------------------------------------------------------------------------------------------------------------
+ *                              Background Active Color
+ * ----------------------------------------------------------------------------------------------------------------------------------------*/
+.bg-red-active        {background-color: #D33724 !important;}
+.bg-yellow-active     {background-color: #DB8B0B !important;}
+.bg-aqua-active       {background-color: #00A7D0 !important;}
+.bg-light-blue-active {background-color: #357CA5 !important;}
+.bg-green-active      {background-color: #008D4C !important;}
+.bg-blue-active       {background-color: #005384 !important;}
+.bg-gray-active       {background-color: #B5BBC8 !important; color: #000;}
+.bg-navy-active       {background-color: #001A35 !important;}
+.bg-teal-active       {background-color: #30BBBB !important;}
+.bg-olive-active      {background-color: #368763 !important;}
+.bg-lime-active       {background-color: #00E765 !important;}
+.bg-orange-active     {background-color: #FF7701 !important;}
+.bg-fuchsia-active    {background-color: #DB0EAD !important;}
+.bg-purple-active     {background-color: #555299 !important;}
+.bg-maroon-active     {background-color: #CA195A !important;}
+/*----------------------------------------------------------------------------------------------------------------------------------------
+ *                              Gradient Background Color
+ * ----------------------------------------------------------------------------------------------------------------------------------------*/
+.bg-teal-gradient {
+    background: #39cccc !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #39cccc), color-stop(1, #7adddd)) !important;
+    background: -ms-linear-gradient(bottom, #39cccc, #7adddd) !important;
+    background: -moz-linear-gradient(center bottom, #39cccc 0%, #7adddd 100%) !important;
+    background: -o-linear-gradient(#7adddd, #39cccc) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7adddd', endColorstr='#39cccc', GradientType=0) !important;
+    color: #fff;
+}
+.bg-light-blue-gradient {
+    background: #3c8dbc !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #3c8dbc), color-stop(1, #67a8ce)) !important;
+    background: -ms-linear-gradient(bottom, #3c8dbc, #67a8ce) !important;
+    background: -moz-linear-gradient(center bottom, #3c8dbc 0%, #67a8ce 100%) !important;
+    background: -o-linear-gradient(#67a8ce, #3c8dbc) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#67a8ce', endColorstr='#3c8dbc', GradientType=0) !important;
+    color: #fff;
+}
+.bg-blue-gradient {
+    background: #0073b7 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #0073b7), color-stop(1, #0089db)) !important;
+    background: -ms-linear-gradient(bottom, #0073b7, #0089db) !important;
+    background: -moz-linear-gradient(center bottom, #0073b7 0%, #0089db 100%) !important;
+    background: -o-linear-gradient(#0089db, #0073b7) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0089db', endColorstr='#0073b7', GradientType=0) !important;
+    color: #fff;
+}
+.bg-aqua-gradient {
+    background: #00c0ef !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #00c0ef), color-stop(1, #14d1ff)) !important;
+    background: -ms-linear-gradient(bottom, #00c0ef, #14d1ff) !important;
+    background: -moz-linear-gradient(center bottom, #00c0ef 0%, #14d1ff 100%) !important;
+    background: -o-linear-gradient(#14d1ff, #00c0ef) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#14d1ff', endColorstr='#00c0ef', GradientType=0) !important;
+    color: #fff;
+}
+.bg-yellow-gradient {
+    background: #f39c12 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #f39c12), color-stop(1, #f7bc60)) !important;
+    background: -ms-linear-gradient(bottom, #f39c12, #f7bc60) !important;
+    background: -moz-linear-gradient(center bottom, #f39c12 0%, #f7bc60 100%) !important;
+    background: -o-linear-gradient(#f7bc60, #f39c12) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f7bc60', endColorstr='#f39c12', GradientType=0) !important;
+    color: #fff;
+}
+.bg-purple-gradient {
+    background: #605ca8 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #605ca8), color-stop(1, #9491c4)) !important;
+    background: -ms-linear-gradient(bottom, #605ca8, #9491c4) !important;
+    background: -moz-linear-gradient(center bottom, #605ca8 0%, #9491c4 100%) !important;
+    background: -o-linear-gradient(#9491c4, #605ca8) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#9491c4', endColorstr='#605ca8', GradientType=0) !important;
+    color: #fff;
+}
+.bg-green-gradient {
+    background: #00a65a !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #00a65a), color-stop(1, #00ca6d)) !important;
+    background: -ms-linear-gradient(bottom, #00a65a, #00ca6d) !important;
+    background: -moz-linear-gradient(center bottom, #00a65a 0%, #00ca6d 100%) !important;
+    background: -o-linear-gradient(#00ca6d, #00a65a) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ca6d', endColorstr='#00a65a', GradientType=0) !important;
+    color: #fff;
+}
+.bg-red-gradient {
+    background: #dd4b39 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #dd4b39), color-stop(1, #e47365)) !important;
+    background: -ms-linear-gradient(bottom, #dd4b39, #e47365) !important;
+    background: -moz-linear-gradient(center bottom, #dd4b39 0%, #e47365 100%) !important;
+    background: -o-linear-gradient(#e47365, #dd4b39) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e47365', endColorstr='#dd4b39', GradientType=0) !important;
+    color: #fff;
+}
+.bg-black-gradient {
+    background: #111111 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #111111), color-stop(1, #2b2b2b)) !important;
+    background: -ms-linear-gradient(bottom, #111111, #2b2b2b) !important;
+    background: -moz-linear-gradient(center bottom, #111111 0%, #2b2b2b 100%) !important;
+    background: -o-linear-gradient(#2b2b2b, #111111) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2b2b2b', endColorstr='#111111', GradientType=0) !important;
+    color: #fff;
+}
+.bg-maroon-gradient {
+    background: #d81b60 !important;
+    background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #d81b60), color-stop(1, #e73f7c)) !important;
+    background: -ms-linear-gradient(bottom, #d81b60, #e73f7c) !important;
+    background: -moz-linear-gradient(center bottom, #d81b60 0%, #e73f7c 100%) !important;
+    background: -o-linear-gradient(#e73f7c, #d81b60) !important;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e73f7c', endColorstr='#d81b60', GradientType=0) !important;
+    color: #fff;
+}
+/*----------------------------------------------------------------------------------------------------------------------------------------------*/

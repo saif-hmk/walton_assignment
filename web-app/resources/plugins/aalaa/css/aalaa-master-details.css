@@ -1,0 +1,31 @@
+/**
+ * @Created_By : AALAA
+ * @Date       : 2017.12.10 02:02:00 AM
+ * @Author     : Md. Hoshen Mahmud Khan
+ * @Email      : saif_hmk@live.com
+ * @Phone      : +8801672036757
+ **/
+/*======================================================================================================================================================*/
+/*          Master Detail's Tracking Color                                                                                                              */
+/*------------------------------------------------------------------------------------------------------------------------------------------------------*/
+.md-tr-crude{
+    width   : 1px !important;
+    padding : 0px !important;
+    margin  : 0px !important;
+}
+.md-status-c{
+    background-color: #00733e !important;
+}
+.md-status-r{
+    background-color: #0097bc !important;
+}
+.md-status-u{
+    background-color: #9C27B0 !important;
+}
+.md-status-d{
+    background-color: #c23321 !important;
+}
+.md-status-e{
+    background-color: #c87f0a !important;
+}
+/*======================================================================================================================================================*/

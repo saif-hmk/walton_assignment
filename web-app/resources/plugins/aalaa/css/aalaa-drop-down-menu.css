@@ -1,0 +1,169 @@
+/**
+ * @Created_By : AALAA
+ * @Date       : 2016.11.11 01:48:00 AM
+ * @Author     : Md. Hoshen Mahmud Khan
+ * @Email      : saif_hmk@live.com
+ * @Phone      : +8801672036757
+ **/
+/*======================================================================================================================================================*/
+/*      Drop Down Menu                                                                                                                                      */
+/*======================================================================================================================================================*/
+.drop-down-menu {
+    padding  : 0;
+    margin   : 0;
+    border   : 0;
+    width    : auto;
+    font-size: 14px;
+}
+.nav>li>a {
+    position: relative;
+    display : block;
+    padding : 15px 5px;
+}
+.drop-down-menu:after,
+.drop-down-menu ul:after {
+    content: '';
+    display: block;
+    clear  : both;
+}
+
+.drop-down-menu ul,
+.drop-down-menu li {
+    list-style: none;
+    margin    : 0;
+    padding   : 0;
+}
+
+.drop-down-menu ul {
+    position: relative;
+    z-index : 597;
+}
+
+.drop-down-menu > ul {
+    *display: inline-block;
+}
+
+.drop-down-menu ul li ul a {
+    background : #333;
+    color      : #CBCBCB;
+    line-height: 1em;
+}
+
+.drop-down-menu a {
+    padding        : 0 20px;
+    display        : block;
+    text-decoration: none;
+}
+
+.drop-down-menu ul ul {
+    left          : 0;
+    top           : 100%;
+    bottom        : 0;
+    width         : 100%;
+    z-index       : 598;
+    visibility    : hidden;
+    position      : absolute;
+    margin-top    : 0;
+    border-top    : 4px solid #0b5394;
+    text-transform: none;
+    min-width     : 190px;
+}
+
+.drop-down-menu ul li {
+    float         : left;
+    min-height    : 1px;
+    vertical-align: middle;
+}
+
+.drop-down-menu ul li.hover,
+.drop-down-menu ul li:hover {
+    position: relative;
+    z-index : 599;
+    cursor  : default;
+}
+
+.drop-down-menu ul li:hover > ul {
+    visibility: visible;
+}
+
+.drop-down-menu ul li:hover > a,
+.drop-down-menu ul li.active > a {
+    background: #0b5394;
+    color     : #ffffff;
+}
+
+.drop-down-menu ul ul a {
+    background : #0b5394;
+    color      : #ffffff;
+    border     : 1px solid #073865;
+    border-top : 0 none;
+    line-height: 100%;
+    padding    : 10px 10px;
+    font-size  : 14px;
+}
+
+.drop-down-menu ul ul ul {
+    top       : 0;
+    left      : 190px;
+    width     : 190px;
+    border-top: 0 none;
+}
+
+.drop-down-menu ul ul li {
+    float      : none;
+    position   : relative;
+    font-weight: normal;
+}
+
+.drop-down-menu ul ul li:first-child > a {
+    border-top: 1px solid #073865;
+}
+
+.drop-down-menu ul ul li:hover > a {
+    background: #0f6ec3;
+    color     : #ffffff;
+}
+
+.drop-down-menu ul li.last ul {
+    left : auto;
+    right: 0;
+}
+
+.drop-down-menu ul li.last ul ul {
+    left : auto;
+    right: 99.5%;
+}
+
+.drop-down-menu > ul > li > a {
+    line-height: 18px;
+    font-size  : 14px;
+}
+
+.drop-down-menu > ul > li > a > span {
+    /*display: none;*/
+}
+
+.drop-down-menu ul ul li:last-child > a {
+    -moz-border-radius     : 0 0 3px 3px;
+    -webkit-border-radius  : 0 0 3px 3px;
+    border-radius          : 0 0 3px 3px;
+
+    -moz-background-clip   : padding;
+    -webkit-background-clip: padding-box;
+    background-clip        : padding-box;
+
+    -moz-box-shadow        : 0 1px 0 #0b5394;
+    -webkit-box-shadow     : 0 1px 0 #0b5394;
+    box-shadow             : 0 1px 0 #0b5394;
+}
+
+.drop-down-menu ul ul li:last-child:hover > a {
+    -moz-border-radius     : 0 0 0 3px;
+    -webkit-border-radius  : 0 0 0 3px;
+    border-radius          : 0 0 0 3px;
+
+    -moz-background-clip   : padding;
+    -webkit-background-clip: padding-box;
+    background-clip        : padding-box;
+}
+/*======================================================================================================================================================*/

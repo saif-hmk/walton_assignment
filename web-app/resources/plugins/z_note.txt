@@ -1,0 +1,6 @@
+For Console required
+    bootstrap
+    font-awesome-4.0.3
+    codemirror-5.25.2
+    jquery-layout
+    jquery-ui-1.10.3

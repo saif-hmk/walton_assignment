@@ -1,0 +1,395 @@
+import grails.plugin.springsecurity.SpringSecurityService
+import org.bapa.com.BapaStation
+import org.bapa.com.BapaStuff
+import org.bapa.com.Designation
+import org.bapa.duty.BapaDutyPeriodFlight
+import org.bapa.rpt.RptReportBapa
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.aalaa.auth.*
+import org.aalaa.com.*
+import org.aalaa.rpt.*
+import org.aalaa.sys.*
+
+import java.text.SimpleDateFormat
+
+class BootStrap {
+    GrailsApplication     grailsApplication
+    SpringSecurityService springSecurityService
+    UtilityService        utilityService
+    TrackerService        trackerService
+    IoUtilService         ioUtilService
+    final String          FS = File.separator
+
+    def init = { servletContext ->
+        SimpleDateFormat dateParseFormat     = new SimpleDateFormat(),
+                         dateTimeParseFormat = new SimpleDateFormat()
+                         dateParseFormat     = new SimpleDateFormat(grailsApplication.config.format.dtp.date)
+                         dateTimeParseFormat = new SimpleDateFormat(grailsApplication.config.format.dtp.dateTime12)
+        def              createdBy           = AuthUser.findByUsername("hmk") ?: 1L
+        String           configAttribute     = "ROLE_DEVELOPER",
+                         remarks             = "Auto Generated",
+                         jsonDsR             =  ioUtilService.getRepository() + FS + ioUtilService.getModuleSubModule("setupData", "reflection"),
+                         jsonDsB             =  ioUtilService.getRepository() + FS + ioUtilService.getModuleSubModule("setupData", "bapa")
+
+        //String reflectionAuthUser = """
+        ArrayList reflectionAuthUserList = utilityService.getMapFromJson(new File(jsonDsR + "AuthUser.json")).get("jsonKey")
+        for (Map m in reflectionAuthUserList) {
+            AuthUser.findByUsername(m.username) ?: new AuthUser(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionAuthRole = """
+        ArrayList reflectionAuthRoleList = utilityService.getMapFromJson(new File(jsonDsR + "AuthRole.json")).get("jsonKey")
+        for (Map m in reflectionAuthRoleList) {
+            AuthRole.findByAuthority(m.authority) ?: new AuthRole(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionAuthUserLkRole = """
+        ArrayList reflectionAuthUserLkRoleList = utilityService.getMapFromJson(new File(jsonDsR + "AuthUserLkRole.json")).get("jsonKey")
+        for (Map m in reflectionAuthUserLkRoleList) {
+            m.authUser = AuthUser.findByUsername(m.authUser)
+            m.authRole = AuthRole.findByAuthority(m.authRole)
+            AuthUserLkRole.findByAuthUserAndAuthRole(m.authUser, m.authRole) ?: new AuthUserLkRole(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionAuthLandingPage = """
+        ArrayList reflectionAuthLandingPageList = utilityService.getMapFromJson(new File(jsonDsR + "AuthLandingPage.json")).get("jsonKey")
+        for (Map m in reflectionAuthLandingPageList) {
+            m.authRole = AuthRole.findByAuthority(m.authRole)
+            AuthLandingPage.findByAuthRole(m.authRole) ?: new AuthLandingPage(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionAuthUserProfile = """
+        ArrayList reflectionAuthUserProfileList = utilityService.getMapFromJson(new File(jsonDsR + "AuthUserProfile.json")).get("jsonKey")
+        for (Map m in reflectionAuthUserProfileList) {
+            m.authUser      = AuthUser.findByUsername(m.authUser)
+            m.maritalStatus = MaritalStatus.valueOf(m.maritalStatus)
+            m.gender        = Gender.valueOf(m.gender)
+            m.honorific     = Honorific.valueOf(m.honorific)
+            m.religion      = Religion.valueOf(m.religion)
+            m.dateOfBirth   = m.dateOfBirth ? dateParseFormat.parse(m.dateOfBirth) : null
+            try {
+                AuthUserProfile.findByAuthUser(m.authUser) ?: new AuthUserProfile(m).save(failOnError: true)
+            } catch (Exception e) {
+                println e
+            }
+        }
+        //"""
+
+        //String reflectionAuthUserProperty = """
+        ArrayList reflectionAuthUserPropertyList = utilityService.getMapFromJson(new File(jsonDsR + "AuthUserProperty.json")).get("jsonKey")
+        for (Map m in reflectionAuthUserPropertyList) {
+            m.authUserProfile = AuthUserProfile.findByAuthUser(AuthUser.findByUsername(m.authUser))
+            m.menuType        = MenuType.valueOf(m.menuType)
+            m.local           = Local.valueOf(m.local)
+            m.availability    = Availability.valueOf(m.availability)
+            m.firstDayOfWeek  = FirstDayOfWeek.valueOf(m.firstDayOfWeek)
+            AuthUserProperty.findByAuthUserProfile(m.authUserProfile) ?: new AuthUserProperty(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionSysProperty = """
+        ArrayList reflectionSysPropertyList = utilityService.getMapFromJson(new File(jsonDsR + "SysProperty.json")).get("jsonKey")
+        for (Map m in reflectionSysPropertyList) {
+            SysProperty.findByPropertyKey(m.propertyKey) ?: new SysProperty(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionComLookup = """
+        ArrayList reflectionComLookupList = utilityService.getMapFromJson(new File(jsonDsR + "ComLookup.json")).get("jsonKey")
+        for (Map m in reflectionComLookupList) {
+            ComLookup.findByLookupKeywordAndKeyword(LookupKeyword.valueOf(m.lookupKeyword), m.keyword) ?: new ComLookup(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionComBank = """
+        ArrayList reflectionComBankList = utilityService.getMapFromJson(new File(jsonDsR + "ComBank.json")).get("jsonKey")
+        for (Map m in reflectionComBankList) {
+            ComBank.findByBankTypeAndFullName(BankType.valueOf(m.bankType), m.fullName) ?: new ComBank(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionRptReport = """
+        ArrayList reflectionRptReportList = utilityService.getMapFromJson(new File(jsonDsR + "RptReport.json")).get("jsonKey")
+        for (Map m in reflectionRptReportList) {
+            RptReport.findByCode(m.code) ?: new RptReport(m).save(failOnError: true)
+        }
+        //"""
+
+        //String rptReportBapa = """
+        ArrayList rptReportBapaList = utilityService.getMapFromJson(new File(jsonDsB + "RptReportBapa.json")).get("jsonKey")
+        for (Map m in rptReportBapaList) {
+            RptReportBapa.findByCode(m.code) ?: new RptReportBapa(m).save(failOnError: true)
+        }
+        //"""
+
+        String reflectionRptReportLkParam = """
+        ArrayList reflectionRptReportLkParamList = utilityService.getMapFromJson(new File(jsonDsR + "RptReportLkParam.json")).get("jsonKey")
+        for (Map m in reflectionRptReportLkParamList) {
+            m.rptReport    = RptReport.findByCode(m.rptReport)
+            m.reportParam  = ReportParam.valueOf(m.reportParam)
+            m.propertyType = PropertyType.valueOf(m.propertyType)
+            RptReportLkParam.findByRptReportAndReportParam(m.rptReport, m.reportParam) ?: new RptReportLkParam(m).save(failOnError: true)
+        }
+        """
+
+        //String bapaRptReportLkParam = """
+        ArrayList bapaRptReportLkParamList = utilityService.getMapFromJson(new File(jsonDsB + "RptReportLkParam.json")).get("jsonKey")
+        for (Map m in bapaRptReportLkParamList) {
+            m.rptReport    = RptReport.findByCode(m.rptReport)
+            m.reportParam  = ReportParam.valueOf(m.reportParam)
+            m.propertyType = PropertyType.valueOf(m.propertyType)
+            RptReportLkParam.findByRptReportAndReportParam(m.rptReport, m.reportParam) ?: new RptReportLkParam(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionRptReportLkFormat = """
+        ArrayList reflectionRptReportLkFormatList = utilityService.getMapFromJson(new File(jsonDsR + "RptReportLkFormat.json")).get("jsonKey")
+        for (Map m in reflectionRptReportLkFormatList) {
+            m.rptReport    = RptReport.findByCode(m.rptReport)
+            m.reportFormat = ReportFormat.valueOf(m.reportFormat)
+            RptReportLkFormat.findByRptReportAndReportFormat(m.rptReport, m.reportFormat) ?: new RptReportLkFormat(m).save(failOnError: true)
+        }
+        //"""
+
+        //String bapaRptReportLkFormat = """
+        ArrayList bapaRptReportLkFormatList = utilityService.getMapFromJson(new File(jsonDsB + "RptReportLkFormat.json")).get("jsonKey")
+        for (Map m in bapaRptReportLkFormatList) {
+            m.rptReport    = RptReport.findByCode(m.rptReport)
+            m.reportFormat = ReportFormat.valueOf(m.reportFormat)
+            RptReportLkFormat.findByRptReportAndReportFormat(m.rptReport, m.reportFormat) ?: new RptReportLkFormat(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionRptReportLkRole = """
+        ArrayList reflectionRptReportLkRoleList = utilityService.getMapFromJson(new File(jsonDsR + "RptReportLkRole.json")).get("jsonKey")
+        for (Map m in reflectionRptReportLkRoleList) {
+            m.rptReport = RptReport.findByCode(m.rptReport)
+            m.authRole  = AuthRole.findAllByAuthority(m.authRole)
+            RptReportLkRole.findByRptReportAndAuthRole(m.rptReport, m.authRole) ?: new RptReportLkRole(m).save(failOnError: true)
+        }
+        //"""
+
+        //String bapaRptReportLkRole = """
+        ArrayList bapaRptReportLkRoleList = utilityService.getMapFromJson(new File(jsonDsB + "RptReportLkRole.json")).get("jsonKey")
+        for (Map m in bapaRptReportLkRoleList) {
+            m.rptReport = RptReport.findByCode(m.rptReport)
+            m.authRole  = AuthRole.findAllByAuthority(m.authRole)
+            RptReportLkRole.findByRptReportAndAuthRole(m.rptReport, m.authRole) ?: new RptReportLkRole(m).save(failOnError: true)
+        }
+        //"""
+
+        String AuthMenuGeneratorJson = """
+        //todo fix :could'nt insert parent id        
+        ArrayList authMenuList = utilityService.getMapFromJson(new File("web-app/resources/setupData/AuthMenu.json")).get("jsonKey")
+        for (Map m in authMenuList.sort{it.code}) {
+            m.createdBy   = AuthUser.findByUsername("hmk")
+            //m.parentMenu ? m.parentMenu = AuthMenu.findByCode(m.parentMenu) : null
+            AuthMenu.findByUrl(m.url) ?: new AuthMenu(m).save(failOnError: true)
+        }
+        """
+
+        //String AuthMenuGenerator = """
+        //createdBy           = AuthUser.findByUsername("hmk")
+
+        //       /#system
+        AuthMenu _100000 = AuthMenu.findByUrl("/#system"                    ) ?: new AuthMenu(["code": "100000", parentMenu:    null, url: "/#system"                   , title: "System"                   , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-desktop'                ]).save(failOnError: true)
+        AuthMenu _130000 = AuthMenu.findByUrl("/#sysReport"                 ) ?: new AuthMenu(["code": "130000", parentMenu: _100000, url: "/#sysReport"                , title: "Report"                   , sortOrder: 15, createdBy: createdBy, menuIcon: "fa fa-pie-chart"              ]).save(failOnError: true)
+        AuthMenu _131000 = AuthMenu.findByUrl("/sysReport/overview"         ) ?: new AuthMenu(["code": "131000", parentMenu: _130000, url: "/sysReport/overview"        , title: "Report - Overview"        , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _132000 = AuthMenu.findByUrl("/sysReport/index"            ) ?: new AuthMenu(["code": "132000", parentMenu: _130000, url: "/sysReport/index"           , title: "Report - Index"           , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _140000 = AuthMenu.findByUrl("/console"                    ) ?: new AuthMenu(["code": "140000", parentMenu: _100000, url: "/console"                   , title: "Console"                  , sortOrder: 20, createdBy: createdBy, menuIcon: 'fa fa-terminal'               ]).save(failOnError: true)
+        AuthMenu _150000 = AuthMenu.findByUrl("/sysLog"                     ) ?: new AuthMenu(["code": "150000", parentMenu: _100000, url: "/sysLog"                    , title: "Log"                      , sortOrder: 25, createdBy: createdBy, menuIcon: 'fa fa-file-text'              ]).save(failOnError: true)
+
+        //Menu : "/#setupData"
+        AuthMenu _400000 = AuthMenu.findByUrl('/#setupData'                 ) ?: new AuthMenu(["code": "400000", parentMenu:    null, url: '/#setupData'                , title: 'Setup Data'               , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-cog'                    ]).save(failOnError: true)
+        AuthMenu _410000 = AuthMenu.findByUrl("/#comLookup"                 ) ?: new AuthMenu(["code": "410000", parentMenu: _400000, url: "/#comLookup"                , title: "Lookup"                   , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _411000 = AuthMenu.findByUrl("/comLookup/index"            ) ?: new AuthMenu(["code": "411000", parentMenu: _410000, url: "/comLookup/index"           , title: "Lookup - Index"           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _412000 = AuthMenu.findByUrl("/comLookup/create"           ) ?: new AuthMenu(["code": "412000", parentMenu: _410000, url: "/comLookup/create"          , title: "Lookup - Create"          , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _490000 = AuthMenu.findByUrl("/#comPeriod"                 ) ?: new AuthMenu(["code": "490000", parentMenu: _400000, url: "/#comPeriod"                , title: "Period"                   , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _491000 = AuthMenu.findByUrl("/comPeriod/index"            ) ?: new AuthMenu(["code": "491000", parentMenu: _490000, url: "/comPeriod/index"           , title: "Period - Index"           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _492000 = AuthMenu.findByUrl("/comPeriod/create"           ) ?: new AuthMenu(["code": "492000", parentMenu: _490000, url: "/comPeriod/create"          , title: "Period - Create"          , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _420000 = AuthMenu.findByUrl('/#comQuarter'                ) ?: new AuthMenu(["code": "420000", parentMenu: _400000, url: '/#comQuarter'               , title: 'Quarter'                  , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _421000 = AuthMenu.findByUrl('/comQuarter/index'           ) ?: new AuthMenu(["code": "421000", parentMenu: _420000, url: '/comQuarter/index'          , title: 'Quarter - List'           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _422000 = AuthMenu.findByUrl('/comQuarter/create'          ) ?: new AuthMenu(["code": "422000", parentMenu: _420000, url: '/comQuarter/create'         , title: 'Quarter - Create'         , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _430000 = AuthMenu.findByUrl('/#locationType'              ) ?: new AuthMenu(["code": "430000", parentMenu: _400000, url: '/#locationType'             , title: 'Location Type'            , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _431000 = AuthMenu.findByUrl('/locationType/index'         ) ?: new AuthMenu(["code": "431000", parentMenu: _430000, url: '/locationType/index'        , title: 'Location Type - List'     , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _432000 = AuthMenu.findByUrl('/locationType/create'        ) ?: new AuthMenu(["code": "432000", parentMenu: _430000, url: '/locationType/create'       , title: 'Location Type - Create'   , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _440000 = AuthMenu.findByUrl('/#location'                  ) ?: new AuthMenu(["code": "440000", parentMenu: _400000, url: '/#location'                 , title: 'Location'                 , sortOrder: 20, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _441000 = AuthMenu.findByUrl('/#division'                  ) ?: new AuthMenu(["code": "441000", parentMenu: _440000, url: '/#division'                 , title: 'Division'                 , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _441100 = AuthMenu.findByUrl('/division/index'             ) ?: new AuthMenu(["code": "441100", parentMenu: _441000, url: '/division/index'            , title: 'Division - List'          , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _441200 = AuthMenu.findByUrl('/division/create'            ) ?: new AuthMenu(["code": "441200", parentMenu: _441000, url: '/division/create'           , title: 'Division - Create'        , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _442000 = AuthMenu.findByUrl('/#district'                  ) ?: new AuthMenu(["code": "442000", parentMenu: _440000, url: '/#district'                 , title: 'District'                 , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _442100 = AuthMenu.findByUrl('/district/index'             ) ?: new AuthMenu(["code": "442100", parentMenu: _442000, url: '/district/index'            , title: 'District - List'          , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _442200 = AuthMenu.findByUrl('/district/create'            ) ?: new AuthMenu(["code": "442200", parentMenu: _442000, url: '/district/create'           , title: 'District - Create'        , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _443000 = AuthMenu.findByUrl('/#upazila'                   ) ?: new AuthMenu(["code": "443000", parentMenu: _440000, url: '/#upazila'                  , title: 'Upazila'                  , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _443100 = AuthMenu.findByUrl('/upazila/index'              ) ?: new AuthMenu(["code": "443100", parentMenu: _443000, url: '/upazila/index'             , title: 'Upazila - List'           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _443200 = AuthMenu.findByUrl('/upazila/create'             ) ?: new AuthMenu(["code": "443200", parentMenu: _443000, url: '/upazila/create'            , title: 'Upazila - Create'         , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _444000 = AuthMenu.findByUrl('/#unionParishad'             ) ?: new AuthMenu(["code": "444000", parentMenu: _440000, url: '/#unionParishad'            , title: 'Union Parishad'           , sortOrder: 20, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _444100 = AuthMenu.findByUrl('/unionParishad/index'        ) ?: new AuthMenu(["code": "444100", parentMenu: _444000, url: '/unionParishad/index'       , title: 'Union Parishad - List'    , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _444200 = AuthMenu.findByUrl('/unionParishad/create'       ) ?: new AuthMenu(["code": "444200", parentMenu: _444000, url: '/unionParishad/create'      , title: 'Union Parishad - Create'  , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _445000 = AuthMenu.findByUrl('/#ward'                      ) ?: new AuthMenu(["code": "445000", parentMenu: _440000, url: '/#ward'                     , title: 'Ward'                     , sortOrder: 25, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _445100 = AuthMenu.findByUrl('/ward/index'                 ) ?: new AuthMenu(["code": "445100", parentMenu: _445000, url: '/ward/index'                , title: 'Ward - List'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _445200 = AuthMenu.findByUrl('/ward/create'                ) ?: new AuthMenu(["code": "445200", parentMenu: _445000, url: '/ward/create'               , title: 'Ward - Create'            , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _450000 = AuthMenu.findByUrl("/#comBank"                   ) ?: new AuthMenu(["code": "450000", parentMenu: _400000, url: "/#comBank"                  , title: "Bank"                     , sortOrder: 25, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _451000 = AuthMenu.findByUrl("/comBank/index"              ) ?: new AuthMenu(["code": "451000", parentMenu: _450000, url: "/comBank/index"             , title: "Bank - Index"             , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _452000 = AuthMenu.findByUrl("/comBank/create"             ) ?: new AuthMenu(["code": "452000", parentMenu: _450000, url: "/comBank/create"            , title: "Bank - Create"            , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _460000 = AuthMenu.findByUrl("/#admBranch"                 ) ?: new AuthMenu(["code": "460000", parentMenu: _400000, url: "/#admBranch"                , title: "Branch"                   , sortOrder: 30, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _461000 = AuthMenu.findByUrl("/admBranch/index"            ) ?: new AuthMenu(["code": "461000", parentMenu: _460000, url: "/admBranch/index"           , title: "Branch - Index"           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _462000 = AuthMenu.findByUrl("/admBranch/create"           ) ?: new AuthMenu(["code": "462000", parentMenu: _460000, url: "/admBranch/create"          , title: "Branch - Create"          , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _470000 = AuthMenu.findByUrl("/#comDepartment"             ) ?: new AuthMenu(["code": "470000", parentMenu: _400000, url: "/#comDepartment"            , title: "Department"               , sortOrder: 35, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _471000 = AuthMenu.findByUrl("/comDepartment/index"        ) ?: new AuthMenu(["code": "471000", parentMenu: _470000, url: "/comDepartment/index"       , title: "Department - Index"       , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _472000 = AuthMenu.findByUrl("/comDepartment/create"       ) ?: new AuthMenu(["code": "472000", parentMenu: _470000, url: "/comDepartment/create"      , title: "Department - Create"      , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _480000 = AuthMenu.findByUrl("/#comDesignation"            ) ?: new AuthMenu(["code": "480000", parentMenu: _400000, url: "/#comDesignation"           , title: "Designation"              , sortOrder: 40, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _481000 = AuthMenu.findByUrl("/comDesignation/index"       ) ?: new AuthMenu(["code": "481000", parentMenu: _480000, url: "/comDesignation/index"      , title: "Designation - Index"      , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _482000 = AuthMenu.findByUrl("/comDesignation/create"      ) ?: new AuthMenu(["code": "482000", parentMenu: _480000, url: "/comDesignation/create"     , title: "Designation - Create"     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        //"""
+
+        //Menu : "/#configuration"
+        AuthMenu _200000 = AuthMenu.findByUrl('/#configuration'             ) ?: new AuthMenu(["code": "200000", parentMenu:    null, url: '/#configuration'            , title: 'Configuration'            , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-cogs'                   ]).save(failOnError: true)
+        AuthMenu _210000 = AuthMenu.findByUrl("/#comCode"                   ) ?: new AuthMenu(["code": "210000", parentMenu: _200000, url: "/#comCode"                  , title: "Code Generator"           , sortOrder: 05, createdBy: createdBy, menuIcon: "fa fa-book"                   ]).save(failOnError: true)
+        AuthMenu _211000 = AuthMenu.findByUrl("/comCode/index"              ) ?: new AuthMenu(["code": "211000", parentMenu: _210000, url: "/comCode/index"             , title: "CG - Index"               , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _212000 = AuthMenu.findByUrl("/comCode/create"             ) ?: new AuthMenu(["code": "212000", parentMenu: _210000, url: "/comCode/create"            , title: "CG - Create"              , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+
+        //AALAA - Report's
+        AuthMenu _220000 = AuthMenu.findByUrl("/#rptReport"                 ) ?: new AuthMenu(["code": "220000", parentMenu: _200000, url: "/#rptReport"                , title: "Report"                   , sortOrder: 25, createdBy: createdBy, menuIcon: 'fa fa-pie-chart'              ]).save(failOnError: true)
+        AuthMenu _221000 = AuthMenu.findByUrl("/rptReport/index"            ) ?: new AuthMenu(["code": "221000", parentMenu: _220000, url: "/rptReport/index"           , title: "Report - Index"           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _222000 = AuthMenu.findByUrl("/rptReport/create"           ) ?: new AuthMenu(["code": "222000", parentMenu: _220000, url: "/rptReport/create"          , title: "Report - Create"          , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _223000 = AuthMenu.findByUrl("/rptReport/download"         ) ?: new AuthMenu(["code": "223000", parentMenu: _220000, url: "/rptReport/download"        , title: "Report - Download"        , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+
+        //Menu : "/#administration"
+        AuthMenu _300000 = AuthMenu.findByUrl('/#administration'            ) ?: new AuthMenu(["code": "300000", parentMenu:    null, url: '/#administration'           , title: 'Administration'           , sortOrder: 20, createdBy: createdBy, menuIcon: 'fa fa-sliders'                ]).save(failOnError: true)
+        AuthMenu _310000 = AuthMenu.findByUrl('/#authMenu'                  ) ?: new AuthMenu(["code": "310000", parentMenu: _300000, url: '/#authMenu'                 , title: 'Menu'                     , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-sitemap text-red'       ]).save(failOnError: true)
+        AuthMenu _311000 = AuthMenu.findByUrl('/authMenu/index'             ) ?: new AuthMenu(["code": "311000", parentMenu: _310000, url: '/authMenu/index'            , title: 'Menu - List'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _312000 = AuthMenu.findByUrl('/authMenu/create'            ) ?: new AuthMenu(["code": "312000", parentMenu: _310000, url: '/authMenu/create'           , title: 'Menu - Create'            , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _320000 = AuthMenu.findByUrl('/#personnel'                 ) ?: new AuthMenu(["code": "320000", parentMenu: _300000, url: '/#personnel'                , title: 'Personnel'                , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _321000 = AuthMenu.findByUrl('/#authUser'                  ) ?: new AuthMenu(["code": "321000", parentMenu: _320000, url: '/#authUser'                 , title: 'User'                     , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _321100 = AuthMenu.findByUrl('/authUser/index'             ) ?: new AuthMenu(["code": "321100", parentMenu: _321000, url: '/authUser/index'            , title: 'User - List'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _321200 = AuthMenu.findByUrl('/authUser/create'            ) ?: new AuthMenu(["code": "321200", parentMenu: _321000, url: '/authUser/create'           , title: 'User - Create'            , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _322100 = AuthMenu.findByUrl('/#authRole'                  ) ?: new AuthMenu(["code": "322100", parentMenu: _320000, url: '/#authRole'                 , title: 'Role'                     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _322110 = AuthMenu.findByUrl('/authRole/index'             ) ?: new AuthMenu(["code": "322110", parentMenu: _322100, url: '/authRole/index'            , title: 'Role - List'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _322120 = AuthMenu.findByUrl('/authRole/create'            ) ?: new AuthMenu(["code": "322120", parentMenu: _322100, url: '/authRole/create'           , title: 'Role - Create'            , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _323000 = AuthMenu.findByUrl('/#personnelApproval'         ) ?: new AuthMenu(["code": "323000", parentMenu: _320000, url: '/#personnelApproval'        , title: 'Approval'                 , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _323100 = AuthMenu.findByUrl('/#approvalProcess'           ) ?: new AuthMenu(["code": "323100", parentMenu: _323000, url: '/#approvalProcess'          , title: 'Approval Process'         , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _323110 = AuthMenu.findByUrl('/approvalProcess/index'      ) ?: new AuthMenu(["code": "323110", parentMenu: _323100, url: '/approvalProcess/index'     , title: 'AP - List'                , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _323120 = AuthMenu.findByUrl('/approvalProcess/create'     ) ?: new AuthMenu(["code": "323120", parentMenu: _323100, url: '/approvalProcess/create'    , title: 'AP - Create'              , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _323200 = AuthMenu.findByUrl('/#approvalGroup'             ) ?: new AuthMenu(["code": "323200", parentMenu: _323000, url: '/#approvalGroup'            , title: 'Approval EduGroup'        , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _323210 = AuthMenu.findByUrl('/approvalGroup/index'        ) ?: new AuthMenu(["code": "323210", parentMenu: _323200, url: '/approvalGroup/index'       , title: 'AG - List'                , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _323220 = AuthMenu.findByUrl('/approvalGroup/create'       ) ?: new AuthMenu(["code": "323220", parentMenu: _323200, url: '/approvalGroup/create'      , title: 'AG - Create'              , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _323300 = AuthMenu.findByUrl('/#approvalStatus'            ) ?: new AuthMenu(["code": "323300", parentMenu: _323000, url: '/#approvalStatus'           , title: 'Approval Status'          , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _323310 = AuthMenu.findByUrl('/approvalStatus/index'       ) ?: new AuthMenu(["code": "323310", parentMenu: _323300, url: '/approvalStatus/index'      , title: 'AS - List'                , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _323320 = AuthMenu.findByUrl('/approvalStatus/create'      ) ?: new AuthMenu(["code": "323320", parentMenu: _323300, url: '/approvalStatus/create'     , title: 'AS - Create'              , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _324000 = AuthMenu.findByUrl('/#authLandingPage'           ) ?: new AuthMenu(["code": "324000", parentMenu: _320000, url: '/#authLandingPage'          , title: 'Landing Page'             , sortOrder: 20, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _324100 = AuthMenu.findByUrl('/authLandingPage/index'      ) ?: new AuthMenu(["code": "324100", parentMenu: _324000, url: '/authLandingPage/index'     , title: 'Landing Page - List'      , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _324200 = AuthMenu.findByUrl('/authLandingPage/create'     ) ?: new AuthMenu(["code": "324200", parentMenu: _324000, url: '/authLandingPage/create'    , title: 'Landing Page - Create'    , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _330000 = AuthMenu.findByUrl('/#mapping'                   ) ?: new AuthMenu(["code": "330000", parentMenu: _300000, url: '/#mapping'                  , title: 'Mapping'                  , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _331000 = AuthMenu.findByUrl('/#authUserLkRole'            ) ?: new AuthMenu(["code": "331000", parentMenu: _330000, url: '/#authUserLkRole'           , title: 'User & Role'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _331100 = AuthMenu.findByUrl('/authUserLkRole/index'       ) ?: new AuthMenu(["code": "331100", parentMenu: _331000, url: '/authUserLkRole/index'      , title: 'User & Role - List'       , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _331200 = AuthMenu.findByUrl('/authUserLkRole/create'      ) ?: new AuthMenu(["code": "331200", parentMenu: _331000, url: '/authUserLkRole/create'     , title: 'User & Role - Create'     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _332000 = AuthMenu.findByUrl('/#authRequestMap'            ) ?: new AuthMenu(["code": "332000", parentMenu: _330000, url: '/#authRequestMap'           , title: 'Request & Role'           , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _332100 = AuthMenu.findByUrl('/authRequestMap/index'       ) ?: new AuthMenu(["code": "332100", parentMenu: _332000, url: '/authRequestMap/index'      , title: 'Request & Role - List'    , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _332200 = AuthMenu.findByUrl('/authRequestMap/create'      ) ?: new AuthMenu(["code": "332200", parentMenu: _332000, url: '/authRequestMap/create'     , title: 'Request & Role - Crete'   , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _333000 = AuthMenu.findByUrl('/#mappingApproval'           ) ?: new AuthMenu(["code": "333000", parentMenu: _330000, url: '/#mappingApproval'          , title: 'Approval'                 , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _333100 = AuthMenu.findByUrl('/#approvalGroupMember'       ) ?: new AuthMenu(["code": "333100", parentMenu: _333000, url: '/#approvalGroupMember'      , title: 'AG & Member'              , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _333110 = AuthMenu.findByUrl('/approvalGroupMember/index'  ) ?: new AuthMenu(["code": "333110", parentMenu: _333100, url: '/approvalGroupMember/index' , title: 'AG & Member - List'       , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _333120 = AuthMenu.findByUrl('/approvalGroupMember/create' ) ?: new AuthMenu(["code": "333120", parentMenu: _333100, url: '/approvalGroupMember/create', title: 'AG & Member - Create'     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+        AuthMenu _333200 = AuthMenu.findByUrl('/#approvalGroupStatus'       ) ?: new AuthMenu(["code": "333200", parentMenu: _333000, url: '/#approvalGroupStatus'      , title: 'AG & AS'                  , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-red'      ]).save(failOnError: true)
+        AuthMenu _333210 = AuthMenu.findByUrl('/approvalGroupStatus/index'  ) ?: new AuthMenu(["code": "333210", parentMenu: _333200, url: '/approvalGroupStatus/index' , title: 'AG & AS - List'           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'  ]).save(failOnError: true)
+        AuthMenu _333220 = AuthMenu.findByUrl('/approvalGroupStatus/create' ) ?: new AuthMenu(["code": "333220", parentMenu: _333200, url: '/approvalGroupStatus/create', title: 'AG & AS - Create'         , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'  ]).save(failOnError: true)
+
+        AuthMenu _500000 = AuthMenu.findByUrl("/#bapa"                          ) ?: new AuthMenu(["code": "500000", parentMenu:    null, url: "/#bapa"                         , title: "ITL"                     , sortOrder: 25, createdBy: createdBy, menuIcon: "fa fa-users"                      ]).save(failOnError: true)
+
+        AuthMenu _510000 = AuthMenu.findByUrl("/#bapaStuff"                     ) ?: new AuthMenu(["code": "510000", parentMenu: _500000, url: "/#bapaStuff"                    , title: "Stuff"                    , sortOrder: 05, createdBy: createdBy, menuIcon: "fa fa-user"                       ]).save(failOnError: true)
+        AuthMenu _511000 = AuthMenu.findByUrl("/bapaStuff/index"                ) ?: new AuthMenu(["code": "511000", parentMenu: _510000, url: "/bapaStuff/index"               , title: "Stuff - Index"            , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-list text-primary'          ]).save(failOnError: true)
+        AuthMenu _512000 = AuthMenu.findByUrl("/bapaStuff/create"               ) ?: new AuthMenu(["code": "512000", parentMenu: _510000, url: "/bapaStuff/create"              , title: "Stuff - Create"           , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-user-plus text-success'     ]).save(failOnError: true)
+
+        AuthMenu _520000 = AuthMenu.findByUrl("/#station"                       ) ?: new AuthMenu(["code": "520000", parentMenu: _500000, url: "/#station"                      , title: "Station"                  , sortOrder: 10, createdBy: createdBy, menuIcon: "fa fa-globe"                      ]).save(failOnError: true)
+        AuthMenu _521000 = AuthMenu.findByUrl("/station/index"                  ) ?: new AuthMenu(["code": "521000", parentMenu: _520000, url: "/station/index"                 , title: "Station - Index"          , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'      ]).save(failOnError: true)
+        AuthMenu _522000 = AuthMenu.findByUrl("/station/create"                 ) ?: new AuthMenu(["code": "522000", parentMenu: _520000, url: "/station/create"                , title: "Station - Create"         , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'      ]).save(failOnError: true)
+
+        AuthMenu _530000 = AuthMenu.findByUrl("/#bapaDutyPeriodFlight"          ) ?: new AuthMenu(["code": "530000", parentMenu: _500000, url: "/#bapaDutyPeriodFlight"         , title: "Duty Period"              , sortOrder: 15, createdBy: createdBy, menuIcon: "fa fa-braille"                    ]).save(failOnError: true)
+        AuthMenu _531000 = AuthMenu.findByUrl("/bapaDutyPeriodFlight/index"     ) ?: new AuthMenu(["code": "531000", parentMenu: _530000, url: "/bapaDutyPeriodFlight/index"    , title: "Duty Period - Index"      , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'      ]).save(failOnError: true)
+        AuthMenu _532000 = AuthMenu.findByUrl("/bapaDutyPeriodFlight/create"    ) ?: new AuthMenu(["code": "532000", parentMenu: _530000, url: "/bapaDutyPeriodFlight/create"   , title: "Duty Period - Create"     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'      ]).save(failOnError: true)
+
+        AuthMenu _540000 = AuthMenu.findByUrl("/#bapaDutyRegular"               ) ?: new AuthMenu(["code": "540000", parentMenu: _500000, url: "/#bapaDutyRegular"              , title: "Duty Regular"             , sortOrder: 20, createdBy: createdBy, menuIcon: "fa fa-tasks"                      ]).save(failOnError: true)
+        AuthMenu _541000 = AuthMenu.findByUrl("/bapaDutyRegular/index"          ) ?: new AuthMenu(["code": "541000", parentMenu: _540000, url: "/bapaDutyRegular/index"         , title: "Duty Regular - Index"     , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'      ]).save(failOnError: true)
+        AuthMenu _542000 = AuthMenu.findByUrl("/bapaDutyRegular/create"         ) ?: new AuthMenu(["code": "542000", parentMenu: _540000, url: "/bapaDutyRegular/create"        , title: "Duty Regular - Create"    , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'      ]).save(failOnError: true)
+
+        AuthMenu _550000 = AuthMenu.findByUrl("/#bapaDutyFlight"                ) ?: new AuthMenu(["code": "550000", parentMenu: _500000, url: "/#bapaDutyFlight"               , title: "Duty Flight"              , sortOrder: 25, createdBy: createdBy, menuIcon: "fa fa-plane"                      ]).save(failOnError: true)
+        AuthMenu _551000 = AuthMenu.findByUrl("/bapaDutyFlight/index"           ) ?: new AuthMenu(["code": "551000", parentMenu: _550000, url: "/bapaDutyFlight/index"          , title: "Duty Flight - Index"      , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'      ]).save(failOnError: true)
+        AuthMenu _552000 = AuthMenu.findByUrl("/bapaDutyFlight/create"          ) ?: new AuthMenu(["code": "552000", parentMenu: _550000, url: "/bapaDutyFlight/create"         , title: "Duty Flight - Create"     , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'      ]).save(failOnError: true)
+
+        AuthMenu _580000 = AuthMenu.findByUrl("/#procBapa"                      ) ?: new AuthMenu(["code": "580000", parentMenu: _500000, url: "/#procBapa"                     , title: "Process & Rollback"       , sortOrder: 80, createdBy: createdBy, menuIcon: "fa fa-cogs"                       ]).save(failOnError: true)
+        AuthMenu _581000 = AuthMenu.findByUrl("/procBapa/process"               ) ?: new AuthMenu(["code": "581000", parentMenu: _580000, url: "/procBapa/process"              , title: "Process"                  , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-cog text-success'           ]).save(failOnError: true)
+        AuthMenu _582000 = AuthMenu.findByUrl("/procBapa/rollback"              ) ?: new AuthMenu(["code": "582000", parentMenu: _580000, url: "/procBapa/rollback"             , title: "Rollback"                 , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-recycle text-danger'        ]).save(failOnError: true)
+
+        AuthMenu _590000 = AuthMenu.findByUrl("/#rptReportBapa"                 ) ?: new AuthMenu(["code": "590000", parentMenu: _500000, url: "/#rptReportBapa"                , title: "Report"                   , sortOrder: 90, createdBy: createdBy, menuIcon: "fa fa-pie-chart"                  ]).save(failOnError: true)
+        AuthMenu _591000 = AuthMenu.findByUrl("/rptReportBapa/index"            ) ?: new AuthMenu(["code": "591000", parentMenu: _590000, url: "/rptReportBapa/index"           , title: "Report - Index"           , sortOrder: 05, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-primary'      ]).save(failOnError: true)
+        AuthMenu _592000 = AuthMenu.findByUrl("/rptReportBapa/create"           ) ?: new AuthMenu(["code": "592000", parentMenu: _590000, url: "/rptReportBapa/create"          , title: "Report - Create"          , sortOrder: 10, createdBy: createdBy, menuIcon: 'fa fa-circle-o text-success'      ]).save(failOnError: true)
+        AuthMenu _593000 = AuthMenu.findByUrl("/rptReportBapa/download"         ) ?: new AuthMenu(["code": "593000", parentMenu: _590000, url: "/rptReportBapa/download"        , title: "Report - Download"        , sortOrder: 15, createdBy: createdBy, menuIcon: 'fa fa-cloud-download text-inof'   ]).save(failOnError: true)
+
+        //String reflectionAuthRequestMapAALAA = """
+        ArrayList bapaAuthRequestMapList = utilityService.getMapFromJson(new File(jsonDsB + "AuthRequestMap.json")).get("jsonKey")
+        for (Map m in bapaAuthRequestMapList) {
+            AuthRequestMap.findByUrl(m.url) ?: new AuthRequestMap(m).save(failOnError: true)
+        }
+        //"""
+
+        //String reflectionAuthRequestMapController = """
+        ArrayList reflectionAuthRequestMapControllerList = utilityService.getMapFromJson(new File(jsonDsR + "AuthRequestMapController.json")).get("jsonKey")
+        for (Map m in reflectionAuthRequestMapControllerList) {
+            for (String method in ["/index", "/create", "/save", "/show/**", "/edit/**", "/update/**", "/delete/**"]) {
+                AuthRequestMap.findByUrl("/" + m.controller + method) ?: new AuthRequestMap([configAttribute: m.configAttribute, url: "/" + m.controller + method, createdBy: createdBy]).save(failOnError: true)
+            }
+        }
+        //"""
+
+        //String reflectionAuthRequestMapController = """
+        ArrayList bapaAuthRequestMapControllerList = utilityService.getMapFromJson(new File(jsonDsB + "AuthRequestMapController.json")).get("jsonKey")
+        for (Map m in bapaAuthRequestMapControllerList) {
+            for (String method in ["/index", "/create", "/save", "/show/**", "/edit/**", "/update/**", "/delete/**"]) {
+                AuthRequestMap.findByUrl("/" + m.controller + method) ?: new AuthRequestMap([configAttribute: m.configAttribute, url: "/" + m.controller + method, createdBy: createdBy]).save(failOnError: true)
+            }
+        }
+        //"""
+
+        //String bapaStuff = """
+        ArrayList bapaStuff = utilityService.getMapFromJson(new File(jsonDsB + "BapaStuff.json")).get("jsonKey")
+        for (Map m in bapaStuff) {
+            m.designation       = Designation.valueOf(m.designation)
+            m.gender            = Gender.valueOf(m.gender)
+            BapaStuff.findByStuffNo(m.stuffNo) ?: new BapaStuff(m).save(failOnError: true)
+        }
+        //"""
+
+        //String station = """
+        ArrayList station = utilityService.getMapFromJson(new File(jsonDsB + "BapaStation.json")).get("jsonKey")
+        for (Map m in station) {
+            BapaStation.findByCode(m.code) ?: new BapaStation(m).save(failOnError: true)
+        }
+        //"""
+
+        //String bapaDutyPeriodFlight = """
+        ArrayList bapaDutyPeriodFlight = utilityService.getMapFromJson(new File(jsonDsB + "BapaDutyPeriodFlight.json")).get("jsonKey")
+        for (Map m in bapaDutyPeriodFlight) {
+            BapaDutyPeriodFlight.findByCode(m.code) ?: new BapaDutyPeriodFlight(m).save(failOnError: true)
+        }
+        //"""
+
+        //String comPeriod = """
+        ArrayList comPeriodList = utilityService.getMapFromJson(new File(jsonDsR + "ComPeriod.json")).get("jsonKey")
+        for (Map m in comPeriodList) {
+            m.startDate = dateParseFormat.parse(m.startDate)
+            m.endDate   = dateParseFormat.parse(m.endDate)
+            ComPeriod.findByKeyword(m.keyword) ?: new ComPeriod(m).save(failOnError: true)
+        }
+        //"""
+
+        println "|Server Started @ " + new Date()
+    }
+    def destroy = {
+        println "|Server Stopped @ " + new Date()
+    }
+}

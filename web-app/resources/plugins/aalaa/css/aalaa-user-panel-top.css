@@ -1,0 +1,46 @@
+/**
+ * @Created_By : AALAA
+ * @Date       : 2018.04.11 09:40:00 PM
+ * @Author     : Md. Hoshen Mahmud Khan
+ * @Email      : saif_hmk@live.com
+ * @Phone      : +8801672036757
+ **/
+/*======================================================================================================================================================*/
+/*  Fix dropdown menu in navbars                                                                                                                        */
+/*======================================================================================================================================================*/
+/* Add fade animation to dropdown menus by appending the class .animated-dropdown-menu to the .dropdown-menu ul (or ol)*/
+.open:not(.dropup) > .animated-dropdown-menu {
+    backface-visibility: visible !important;
+    -webkit-animation: flipInX 0.7s both;
+    -o-animation: flipInX 0.7s both;
+    animation: flipInX 0.7s both;
+}
+
+.navbar-custom-menu > .navbar-nav > li {
+    position: relative;
+}
+
+.navbar-custom-menu > .navbar-nav > li > .dropdown-menu {
+    position: absolute;
+    right: 0;
+    left: auto;
+}
+
+@media (max-width: 991px) {
+    .navbar-custom-menu > .navbar-nav {
+        float: right;
+    }
+
+    .navbar-custom-menu > .navbar-nav > li {
+        position: static;
+    }
+
+    .navbar-custom-menu > .navbar-nav > li > .dropdown-menu {
+        position  : absolute;
+        right     : 5%;
+        left      : auto;
+        border    : 1px solid #ddd;
+        background: #fff;
+    }
+}
+/*======================================================================================================================================================*/
