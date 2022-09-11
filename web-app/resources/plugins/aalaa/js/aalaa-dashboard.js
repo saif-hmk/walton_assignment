@@ -109,9 +109,6 @@ function getDashboardDatums() {
         dbDrToDate      = $("#dbToDate"   ).val();
         dbDrFromDate    = $("#dbFromDate" ).val();
         dbDatums        = getResponseByXhr({controller: "authHome", action: "getDashboardDatums", data: {admBranch: admBranch, fromDate: dbDrFromDate, toDate: dbDrToDate}});
-
-        //console.log(dbDatums);
-
         //var terminatedAt= new Date();
         //console.log("|Time Taken (Dashboard Load): " + (terminatedAt.getTime() - startedAt.getTime()) + "ms");
         $.setToLocalStorage("DB_DR_FROM_DATE", dbDrFromDate             );
@@ -129,11 +126,6 @@ $(document).on("click", "#refreshDashboard", function () {
         $.removeFromLocalStorage("DB_DATUMS");
         getDashboardDatums();
         initializeAllDependencies();
-
-        // console.log(dbDatums);
-        // console.log(dbDatums.COMPONENT_GROUPS);
-        // console.log(dbDatums.COUNTER);
-
         generateCounter(dbDatums.COMPONENT_GROUPS, dbDatums.COUNTER);
         generateChart  (dbDatums.COMPONENT_GROUPS, dbDatums.CHARTER);
         aalaaAlertAutoClose({type: "MESSAGE", content: "Dashboard components has been refreshed successfully."});
@@ -152,14 +144,9 @@ function getUniqueComponentGroups(ds) {
 function generateCounter(cgs, ds) {
     var content = "<div class='box-body'>\n<div class='block-counter'>\n<fieldset>\n";
     $.each(cgs , function(i, v) {
-        // console.log(i);
-        // console.log(v);
-        // console.log(ds);
         if (getUniqueComponentGroups(ds).toString().indexOf(v.id) >= 0){
             content += "<div class='row p-l-15 p-r-15'>\n\t<legend>" + v.title + "</legend>\n";
             $.each(ds , function(j, k) {
-                // console.log(j);
-                // console.log(k);
                 content += "\t<div class='" + (k.mediaClass ? k.mediaClass : "col-xs-12 col-sm-6 col-md-4 col-lg-3") + "'>\n" +
                 "\t   <a href='" + (k.detailsUrl.indexOf("#") >= 0 ? "#" : contextPath + k?.detailsUrl ) + "' title='Click to get more details.'>\n" +
                 "\t       <div class='form-group small-box " + k.classBody + "'>\n" +

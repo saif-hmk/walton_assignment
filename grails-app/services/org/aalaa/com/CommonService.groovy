@@ -8,7 +8,6 @@
 
 package org.aalaa.com
 
-import grails.converters.JSON
 import grails.plugin.springsecurity.SpringSecurityService
 import grails.transaction.Transactional
 import org.aalaa.auth.AuthUser

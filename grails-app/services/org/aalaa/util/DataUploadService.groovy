@@ -97,6 +97,11 @@ class DataUploadService {
         aAuthUserProperty()
 
         aSysProperty()
+        aSysScript()
+        aSysDashboardComponentGroup()
+        aSysDashboardItem()
+        aSysDashboardItemLkRole()
+
         aAuthMenu()
         aAuthRequestMap()
         aAuthRequestMapController()
@@ -115,11 +120,6 @@ class DataUploadService {
         
         aComUnitOfMeasurementCategory()
         aComUnitOfMeasurement()
-        
-        aSysScript()
-        aSysDashboardComponentGroup()
-        aSysDashboardItem()
-        aSysDashboardItemLkRole()
     }
 
     private void uploadData(ArrayList<String> arrayList){
